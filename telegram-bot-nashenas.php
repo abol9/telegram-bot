@@ -22,14 +22,40 @@ class User
     $this->pic = $pic;
   }
 }
+  function tableExists($dbh, $id)
+  {
+      $results = $dbh->query("SHOW TABLES LIKE '$id'");
+      if(!$results) {
+          return false;
+      }
+      if($results->rowCount()>0){return true;}
+  }
 
 
 try{
 $pdo = new PDO("mysql:host=$dbhost;dbname=$dbname;",$dbuser,$dbpass);
 $pdo->exec("set names utf8");
+if(tableExists($pdo,"Users")){
+  $sql = "CREATE TABLE Users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+    Name VARCHAR(30) NOT NULL,
+    chat_id VARCHAR(30) NOT NULL,
+    age VARCHAR(2),
+    x_location float,
+    y_location float,
+    pic_url VARCHAR(80) 
+    )";
+  $pdo->exec($sql);
+  echo "Table MyGuests created successfully";
+}
+else {
+  echo "Table is Exist!!!";
+}
 }
 catch(PDOException $e){
     echo $e->getMessage();
 }
+
+
 
 ?>
